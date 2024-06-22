@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="Logo" src="https://avatars.githubusercontent.com/u/139607458?v=4" width="102px" />
+  <img alt="Logo" src="https://raw.githubusercontent.com/VaishnavSherla/vaishnavsherla.github.io/main/favicon.ico" width="102px" />
 </div>
 <h1 align="center">
     Vaishnav Sherla
