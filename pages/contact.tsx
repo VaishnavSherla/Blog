@@ -20,7 +20,7 @@ function Contact(): React.ReactElement {
           Any questions about anything I've been working on? Do you have a project that you think I might like and could possibly be involved in? Let me know!
           </p>
           <form
-            action='https://formspree.io/xrgnvgyb'
+            action='https://formspree.io/xvgppkew'
             method='POST'
             className='mt-4'
           >
