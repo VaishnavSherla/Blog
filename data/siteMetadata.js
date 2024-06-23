@@ -6,7 +6,7 @@ const siteMetadata = {
     'A software engineer who aims to evolve, innovate, and inspire through technology. Passionate about Backend Engineering and Thrives to understand the concepts behind the scenes!',
   language: 'en-us',
   theme: 'system', // system, dark or light
-  siteUrl: 'https://vaishnavsherla.github.io/',
+  siteUrl: 'https://vaishnavsherla.vercel.app',
   siteRepo: 'https://github.com/vaishnavsherla/portfolio',
   siteLogo: '/static/favicons/favicon.ico',
   image: '/static/avatar.jpg',

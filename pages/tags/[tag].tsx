@@ -1,7 +1,7 @@
 import { TagSEO } from '@/components/SEO';
 import siteMetadata from '@/data/siteMetadata';
 import ListLayout from '@/layouts/ListLayout';
-import generateRss from '@/lib/generate-rss';
+import {generateRss} from '@/lib/generate-rss';
 import { getAllFilesFrontMatter } from '@/lib/mdx';
 import { getAllTags } from '@/lib/tags';
 import kebabCase from '@/lib/utils/kebabCase';
@@ -38,7 +38,8 @@ export const getStaticProps: GetStaticProps<{
 
   // rss
   if (filteredPosts.length > 0) {
-    const rss = generateRss(filteredPosts, `tags/${tag}/feed.xml`);
+    // @ts-ignore
+    const rss = generateRss(filteredPosts);
     const rssPath = path.join(root, 'public', 'tags', tag);
     fs.mkdirSync(rssPath, { recursive: true });
     fs.writeFileSync(path.join(rssPath, 'feed.xml'), rss);

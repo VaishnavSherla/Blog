@@ -1,6 +1,6 @@
 import Draft from '@/components/Draft';
 import { MDXLayoutRenderer } from '@/components/MDXComponents';
-import generateRss from '@/lib/generate-rss';
+import {generateRss, generateRssItem} from '@/lib/generate-rss';
 import {
   formatSlug,
   getAllFilesFrontMatter,
@@ -34,6 +34,11 @@ export const getStaticProps: GetStaticProps<{
   prev?: { slug: string; title: string };
   next?: { slug: string; title: string };
 }> = async ({ params }) => {
+  // Fetch all course posts
+  const coursePosts = getFiles('courses');
+  const coursesFrontMatter = await getAllFilesFrontMatter('courses');
+
+  // Fetch all blog posts
   const slug = (params.slug as string[]).join('/');
   const allPosts = await getAllFilesFrontMatter('blog');
   const postIndex = allPosts.findIndex(post => formatSlug(post.slug) === slug);
@@ -42,19 +47,25 @@ export const getStaticProps: GetStaticProps<{
   const post = await getFileBySlug<PostFrontMatter>('blog', slug);
   // @ts-ignore
   const authorList = post.frontMatter.authors || ['default'];
+  
+  // Fetch details of authors asynchronously
   const authorPromise = authorList.map(async author => {
-    const authorResults = await getFileBySlug<AuthorFrontMatter>('authors', [
-      author,
-    ]);
+    const authorResults = await getFileBySlug<AuthorFrontMatter>('authors', [author]);
     return authorResults.frontMatter;
   });
   const authorDetails = await Promise.all(authorPromise);
 
-  // rss
-  if (allPosts.length > 0) {
-    const rss = generateRss(allPosts);
+  const rssItems = [
+    ...allPosts.map(post => generateRssItem(post, 'blog')),
+    ...coursesFrontMatter.map(post => generateRssItem(post, 'courses')),
+  ];
+
+  // Update or create RSS feed
+  if (rssItems.length > 0) {
+    const rss = generateRss(rssItems);
     fs.writeFileSync('./public/feed.xml', rss);
   }
+
 
   return {
     props: {
@@ -65,6 +76,8 @@ export const getStaticProps: GetStaticProps<{
     },
   };
 };
+
+
 
 export default function Blog({
   post,
