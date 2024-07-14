@@ -1,0 +1,174 @@
+---
+title: Object Oriented Programming
+date: '2024-07-14'
+tags: ['oop']
+draft: false
+summary: Learn Object Oriented Programming Paradigm in a Simplified way
+images: [
+    '/static/blogs/banners/OOP.jpg'
+]
+layout: PostLayout
+---
+
+In this article, we'll take a look on Object-Oriented Programming Concepts in a simplified way!
+
+# 🤔 Why OOP Paradigm?
+In contrast to the ***procedural paradigm***, which revolves around writing functions or procedures to manipulate data.
+**Object-Oriented Programming (OOP)** offers a more structured approach, where we group variables and functions that operate on them as attributes/properties and methods. 
+
+OOP promotes readability, modularity, flexibility in making changes with less effort, and reusability of code.
+
+# 😮4 Pillars of OOP
+## 💊Encapsulation
+Encapsulation is a fundamental principle of object-oriented programming that involves the following key aspects:
+- Bundling of attributes and methods together.
+	- Ex: Car might have attributes like color and speed, along with methods like accelerate and brake.
+## 🙈Abstraction
+- **Definition**: Abstraction involves hiding implementation details to reduce complexity and focus on the essential characteristics of an object.
+- **Example**: When driving a car, you don't need to understand how the engine functions.
+- **Purpose**: 
+  - Reduces coupling between classes, minimizing the impact of changes.
+  - Restricts direct access to the internal workings of a class.
+### Access Modifiers in Abstraction
+
+- **Private**: Members are accessible only within the defining class. Access to data is managed through public methods (getters/setters).
+- **Protected**: Accessible within the defining class and its subclasses.
+- **Package-private**: Accessible only within the same package (default in languages like Java).
+- **Public**: Accessible from any other class.
+### Real-World Analogy
+- A browser allows users to navigate to a URL without exposing the underlying processes, like DNS resolution or HTTP requests.
+```python
+class Browser:
+    def __findIpAddress(self, address):
+        return "127.0.0.1"
+    
+    def __sendHttpRequest(self, ip):
+        return "<html>Google<html>"
+    
+    def navigate(self, address):
+        ip = self.__findIpAddress(address)
+        html = self.__sendHttpRequest(ip)
+        print(html)
+
+browser = Browser()
+browser.navigate("google.com")
+```
+## 🌳Inheritance
+Inheritance is a mechanism that allows one class to inherit attributes and methods from another class. 
+This promotes code reusability and establishes a relationship between classes.
+
+Inheritance are of 3 types:
+- Single Inheritance: One parent class
+- Multi level Inheritance: Chain of classes
+- Multiple Inheritance: Multiple Parent Classes
+
+### Diamond Problem
+It occurs, when a class inherits from two classes that both inherit from a common superclass, which internally leads to ambiguity regarding which superclass's members should be inherited.
+
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+  <rect x="150" y="20" width="100" height="50" fill="#e0e0e0" stroke="#000" />
+  <text x="200" y="45" fontSize="14" textAnchor="middle">Class A</text>
+
+  <rect x="50" y="100" width="100" height="50" fill="#b3e5fc" stroke="#000" />
+  <text x="100" y="125" fontSize="14" textAnchor="middle">Class B</text>
+  
+  <rect x="250" y="100" width="100" height="50" fill="#b3e5fc" stroke="#000" />
+  <text x="300" y="125" fontSize="14" textAnchor="middle">Class C</text>
+
+  <line x1="200" y1="70" x2="100" y2="100" stroke="#000" strokeWidth="2" markerEnd="url(#arrowhead)" />
+  <line x1="200" y1="70" x2="300" y2="100" stroke="#000" strokeWidth="2" markerEnd="url(#arrowhead)" />
+
+  <rect x="150" y="200" width="100" height="50" fill="#ffccbc" stroke="#000" />
+  <text x="200" y="225" fontSize="14" textAnchor="middle">Class D</text>
+  
+  <line x1="200" y1="150" x2="200" y2="200" stroke="#000" strokeWidth="2" markerEnd="url(#arrowhead)" />
+
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#000" />
+    </marker>
+  </defs>
+</svg>
+
+
+**Note**: In python, it is resolved by using the order ( **Method Resolution Order (MRO)** ) in which they are inherited.
+
+```python
+class A:
+    def greet(self):
+        return "Hello from A"
+
+class B(A):
+    def greet(self):
+        return "Hello from B"
+
+class C(A):
+    def greet(self):
+        return "Hello from C"
+
+class D(B, C):
+    pass
+
+# Create an instance of D
+d = D()
+print(d.greet())  # Outputs: Hello from B
+```
+
+## 🔄 Polymorphism
+Polymorphism allows methods to behave differently based on the object they are acting upon. This can be achieved through:
+
+1. **Method Overriding (Runtime Polymorphism)**: Inherited classes implement methods defined in a parent class.
+2. **Method Overloading (Compile-time Polymorphism)**: Same method name with different parameter lists.
+
+### Method Overriding Example
+```python
+class Animal:
+    def make_sound(self):
+        raise NotImplementedError("Subclasses must implement this method")
+
+class Dog(Animal):
+    def make_sound(self):
+        return "Woof!"
+
+class Cat(Animal):
+    def make_sound(self):
+        return "Meow!"
+
+def animal_sound(animal):
+    print(animal.make_sound())
+
+dog = Dog()
+cat = Cat()
+
+animal_sound(dog)  # Outputs: Woof!
+animal_sound(cat)  # Outputs: Meow!
+```
+
+**Note**: Python doesn't support method overloading directly but can achieve similar functionality using default parameters and variable-length arguments.
+
+### Overloading Example
+```java
+class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    public double add(double a, double b) {
+        return a + b;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+
+        System.out.println(calc.add(5, 10));         // Outputs: 15
+        System.out.println(calc.add(5, 10, 15));      // Outputs: 30
+        System.out.println(calc.add(5.5, 10.5));      // Outputs: 16.0
+    }
+}
+```
