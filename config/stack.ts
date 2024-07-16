@@ -39,17 +39,16 @@ export enum Stack {
 }
 
 export const WorkStack = [
-  Stack.go,
   Stack.python,
   Stack.javascript,
-  Stack.react,
+  Stack.go,
   Stack.node,
   Stack.django,
   Stack.flask,
+  Stack.react,
   Stack.postgres,
   Stack.mongo,
   Stack.kafka,
-  Stack.graphql,
   Stack.redis,
   Stack.express,
 ];
