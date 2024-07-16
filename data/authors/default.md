@@ -15,4 +15,4 @@ Hello! I'm Vaishnav, a dedicated software engineer based in `India`, currently p
 
 Currently i'm working on building mini relational database to understand the internals and clear the black boxes around database😁.
 
-For connecting with me, the best way is to reach out on [LinkedIn](https://www.linkedin.com/in/vaishnav-sherla/). I'm always open to conversations and opportunities for collaboration.
+For connecting with me, the best way is to reach out on [LinkedIn](https://www.linkedin.com/in/vaishnavsherla/). I'm always open to conversations and opportunities for collaboration.
