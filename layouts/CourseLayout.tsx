@@ -15,7 +15,7 @@ import { PostFrontMatter } from 'types/PostFrontMatter';
 import { Toc } from 'types/Toc';
 
 const editUrl = fileName =>
-  `${siteMetadata.siteRepo}/blob/master/data/courses/${fileName}`;
+  `${siteMetadata.siteRepo}/blob/main/data/courses/${fileName}`;
 const discussUrl = slug =>
   `https://mobile.twitter.com/search?q=${encodeURIComponent(
     `${siteMetadata.siteUrl}/blog/${slug}`,
