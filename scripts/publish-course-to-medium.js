@@ -40,7 +40,7 @@ function getBody(course_slug, slug) {
 
   body = body.replace(
     /\]\(\/static\/courses/g,
-    '](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses',
+    '](https://raw.githubusercontent.com/karanpratapsingh/portfolio/main/public/static/courses',
   );
 
   // Replace static links

@@ -30,7 +30,7 @@ function verifyArgs() {
 }
 
 function getBanner(section, course_slug, slug) {
-  return `https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses/${course_slug}/${section}/${slug}/banner.png`;
+  return `https://raw.githubusercontent.com/karanpratapsingh/portfolio/main/public/static/courses/${course_slug}/${section}/${slug}/banner.png`;
 }
 
 function getBody(course_slug, slug) {
@@ -43,7 +43,7 @@ function getBody(course_slug, slug) {
 
   body = body.replace(
     /\]\(\/static\/courses/g,
-    '](https://raw.githubusercontent.com/karanpratapsingh/portfolio/master/public/static/courses',
+    '](https://raw.githubusercontent.com/karanpratapsingh/portfolio/main/public/static/courses',
   );
 
   // Replace static links

@@ -1,0 +1,134 @@
+---
+title: Building Chat App Simplified
+date: '2024-07-27'
+tags: ['system-design']
+draft: false
+summary: Learn to design a chat app with a flexible database schema, track online status using Web Sockets, and manage message delivery efficiently from Vaishnav Sherla.
+images: [
+	'/static/blogs/banners/chat-app.jpg'
+]
+layout: PostLayout
+canonicalUrl: chat-app-design
+---
+**TL;DR:** For a detailed walkthrough of building a comprehensive chat application schema, including real-time features and message handling strategies, watch this [YouTube video](https://www.youtube.com/watch?v=G_wuwbeh1O4).
+
+
+---
+In this article, we’ll break down how to create a chat app with:
+- A flexible database schema.
+- Tracking the online status of users
+- Sending messages in different types of applications like
+	- Telegram
+	- Zoom
+	- Business Application (Which prioritizes persistence and reliability over delivery of messages)
+
+## 💡Designing Database Schema
+Designing a database schema for a chat app that supports all types of communication
+- one-on-one chats
+- group chats
+- channels
+can be quite challenging. I've been there struggling to get it right.
+
+### Schema
+
+```sql
+-- Table for users
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    last_seen TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table for chats
+CREATE TABLE chats (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    username VARCHAR(255),
+    description VARCHAR(255),
+    type VARCHAR(10) NOT NULL CHECK (type IN ('group', 'channel', 'user')),
+    is_deleted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Table for messages
+CREATE TABLE messages (
+    id SERIAL PRIMARY KEY,
+    from_user INT NOT NULL,
+    chat_id INT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    is_deleted BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (from_user) REFERENCES users(id),
+    FOREIGN KEY (chat_id) REFERENCES chats(id)
+);
+
+-- Table for memberships
+CREATE TABLE memberships (
+    id SERIAL PRIMARY KEY,
+    user_id INT NOT NULL,
+    chat_id INT NOT NULL,
+    last_viewed_message INT,
+    joined_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id),
+    FOREIGN KEY (chat_id) REFERENCES chats(id),
+    FOREIGN KEY (last_viewed_message) REFERENCES messages(id)
+);
+```
+
+### Schema Overview
+1. **Users Table**: Used to store users info
+2. **Chats Table**: 
+	- Holds the information about chat like chat type(One-on-One, Group or Channel), Username, Description
+	- You can extend it by adding the columns like `is_private` to add private channel support
+3. **Memberships Table**: Links users to their chats
+4. **Messages Table**: Stores messages sent in chats
+
+## 👤Tracking Online/Offline Status of Users Using Heartbeats 💓
+
+**Workflow Design**
+
+![User-Status](/static/blogs/chat-app/UserStatus.png)
+
+**Workflow Breakdown**
+
+The online/offline indicator system uses both HTTP and Web Socket:
+
+1. **Login Process:** When a user logs in, update their last seen timestamp in the database. 
+
+2. **WebSocket Connection:** After logging in, establish a persistent WebSocket connection. This allows the server to send real-time updates to the client.
+
+3. **Heartbeat Mechanism:** 
+	- The client periodically sends heartbeat signals to the server to say that he is still online. 
+	- The server stores the heartbeat received in a Map or Cache with TTL.
+	- The server uses these heartbeats to track online status and process them in batch.
+
+4. **Batch Processing:** To optimize performance, process online status updates in batches rather than individually.
+
+## 💬 Message Sending Strategies
+
+**Workflow Designs**
+
+![Telegram](/static/blogs/chat-app/telegram.png)
+
+![Zoom](/static/blogs/chat-app/zoom.png)
+
+![Business](/static/blogs/chat-app/business.png)
+
+**Workflow Breakdown**
+
+Different applications handle message sending and persistence in unique ways:
+
+1. **Telegram like applications:** Messages are sent in real-time and stored for future reference. When User 1 sends a message to User 2, it is first added to a message queue. The message is then emitted, and through an asynchronous workflow, consumers handle the task of persisting it to the database.
+
+2. **Zoom:** Focuses on real-time communication with no message persistence. Messages are broadcast directly through WebSocket, without storing them in the database.
+
+3. **Business Applications:** Prioritize persistence and reliability. Messages are sent via the HTTP server, processed, and then delivered to the recipient via WebSocket. This approach ensures messages are stored in the database and reliably delivered.
+
+## Conclusion
+
+In summary, while designing a chat app involves handling many details, from the database schema to real-time communication and message persistence, everything can be built and extended from this foundational approach.
+
+For a comprehensive guide and visual walkthrough, check out the full video [here](https://www.youtube.com/watch?v=G_wuwbeh1O4).
